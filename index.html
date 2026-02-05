@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Меню</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f7f7f7;
+            color: #333;
+        }
+
+        header {
+            background: #ff6b35;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .container {
+            padding: 15px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .card img {
+            width: 90px;
+            height: 90px;
+            border-radius: 12px;
+            object-fit: cover;
+        }
+
+        .card-content {
+            flex: 1;
+        }
+
+        .card-content h3 {
+            margin: 0 0 5px;
+        }
+
+        .price {
+            font-weight: bold;
+            margin: 5px 0;
+            color: #ff6b35;
+        }
+
+        button {
+            background: #ff6b35;
+            border: none;
+            color: white;
+            padding: 10px 14px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        button:active {
+            transform: scale(0.97);
+        }
+    </style>
+</head>
+<body>
+
+<header>🍽 Меню кафе</header>
+
+<div class="container">
+
+    <div class="card">
+        <img src="https://i.imgur.com/4YQZ6bB.jpg" alt="Пицца">
+        <div class="card-content">
+            <h3>🍕 Пицца</h3>
+            <p>Сырная пицца с томатным соусом</p>
+            <div class="price">450 сом</div>
+            <button>Заказать</button>
+        </div>
+    </div>
+
+    <div class="card">
+        <img src="https://i.imgur.com/ZJ1mF1c.jpg" alt="Суши">
+        <div class="card-content">
+            <h3>🍣 Суши</h3>
+            <p>Лосось, рис, нори</p>
+            <div class="price">520 сом</div>
+            <button>Заказать</button>
+        </div>
+    </div>
+
+    <div class="card">
+        <img src="https://i.imgur.com/6rQdQ7T.jpg" alt="Роллы">
+        <div class="card-content">
+            <h3>🥢 Роллы</h3>
+            <p>Роллы с крабом и авокадо</p>
+            <div class="price">480 сом</div>
+            <button>Заказать</button>
+        </div>
+    </div>
+
+</div>
+<script src="https://telegram.org/js/telegram-web-app.js?59"></script>
+</body>
+</html>
