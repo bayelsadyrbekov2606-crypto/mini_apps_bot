@@ -3,179 +3,208 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FoodBot Premium</title>
+<title>FoodBot WebApp</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif}
-body{
-background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
-color:white;
-padding:15px;
-overflow-x:hidden;
+/* ================= Общие стили ================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
 }
 
-h1{text-align:center;font-weight:800;margin-bottom:20px}
-
-.hidden{display:none}
-
-/* glass card */
-.glass{
-background:rgba(255,255,255,0.08);
-backdrop-filter:blur(20px);
-border-radius:20px;
-padding:20px;
-margin-bottom:20px;
-animation:fadeIn 0.5s ease;
+body {
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    color: white;
+    padding: 15px;
+    overflow-x: hidden;
 }
 
-.center{text-align:center}
-
-.choice-btn{
-padding:14px;
-border:none;
-border-radius:15px;
-background:#ff7b00;
-color:white;
-font-weight:600;
-cursor:pointer;
-margin-top:10px;
-width:100%;
-transition:0.3s;
+h1 {
+    text-align: center;
+    font-weight: 800;
+    margin-bottom: 20px;
 }
 
-.choice-btn:hover{
-background:#ff9500;
-transform:scale(1.03);
+.hidden {
+    display: none;
 }
 
-input{
-width:100%;
-padding:12px;
-border-radius:12px;
-border:none;
-margin-top:10px;
-font-size:14px;
+/* ================= Glass карточки ================= */
+.glass {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(20px);
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 20px;
+    animation: fadeIn 0.5s ease;
 }
 
-.categories{
-display:flex;
-gap:10px;
-overflow-x:auto;
-margin-bottom:20px;
+.center {
+    text-align: center;
 }
 
-.cat-btn{
-padding:10px 16px;
-border-radius:25px;
-background:rgba(255,255,255,0.1);
-border:1px solid rgba(255,255,255,0.2);
-cursor:pointer;
-white-space:nowrap;
-transition:0.3s;
+.choice-btn {
+    padding: 14px;
+    border: none;
+    border-radius: 15px;
+    background: #ff7b00;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 10px;
+    width: 100%;
+    transition: 0.3s;
 }
 
-.cat-btn:hover{background:#ff7b00}
-
-.menu{
-display:grid;
-grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
-gap:15px;
+.choice-btn:hover {
+    background: #ff9500;
+    transform: scale(1.03);
 }
 
-.card{
-background:rgba(255,255,255,0.08);
-backdrop-filter:blur(15px);
-border-radius:20px;
-padding:12px;
-transition:0.4s;
-animation:fadeIn 0.6s ease forwards;
+input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 12px;
+    border: none;
+    margin-top: 10px;
+    font-size: 14px;
 }
 
-.card:hover{
-transform:translateY(-5px) scale(1.03);
+/* ================= Категории ================= */
+.categories {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    margin-bottom: 20px;
 }
 
-.card img{
-width:100%;
-height:120px;
-object-fit:cover;
-border-radius:15px;
-margin-bottom:10px;
+.cat-btn {
+    padding: 10px 16px;
+    border-radius: 25px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: 0.3s;
 }
 
-.price{font-weight:600;margin-bottom:8px}
-
-button{
-width:100%;
-padding:8px;
-border:none;
-border-radius:10px;
-background:#ff7b00;
-color:white;
-cursor:pointer;
-transition:0.3s;
+.cat-btn:hover {
+    background: #ff7b00;
 }
 
-button:hover{background:#ff9500}
-
-.cart{
-position:fixed;
-bottom:20px;
-left:50%;
-transform:translateX(-50%);
-background:#ff7b00;
-padding:14px 25px;
-border-radius:30px;
-font-weight:600;
-cursor:pointer;
-box-shadow:0 5px 20px rgba(0,0,0,0.3);
+/* ================= Меню ================= */
+.menu {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 15px;
 }
 
-/* modal */
-.modal{
-display:none;
-position:fixed;
-inset:0;
-background:rgba(0,0,0,0.6);
-backdrop-filter:blur(8px);
-justify-content:center;
-align-items:center;
-z-index:100;
+.card {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(15px);
+    border-radius: 20px;
+    padding: 12px;
+    transition: 0.4s;
+    animation: fadeIn 0.6s ease forwards;
 }
 
-.modal-content{
-background:#1c2a35;
-padding:25px;
-border-radius:20px;
-width:90%;
-max-width:350px;
-animation:pop 0.3s ease;
+.card:hover {
+    transform: translateY(-5px) scale(1.03);
 }
 
-.qr{
-width:200px;
-height:200px;
-margin:0 auto 15px;
-background:linear-gradient(45deg,#fff,#ddd);
-border-radius:15px;
-display:flex;
-align-items:center;
-justify-content:center;
-color:#000;
-font-weight:600;
+.card img {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 15px;
+    margin-bottom: 10px;
 }
 
-.success{text-align:center;color:#4CAF50;margin-top:10px}
-
-@keyframes fadeIn{
-from{opacity:0;transform:translateY(20px)}
-to{opacity:1;transform:translateY(0)}
+.price {
+    font-weight: 600;
+    margin-bottom: 8px;
 }
 
-@keyframes pop{
-from{transform:scale(0.8);opacity:0}
-to{transform:scale(1);opacity:1}
+.card button {
+    width: 100%;
+    padding: 8px;
+    border: none;
+    border-radius: 10px;
+    background: #ff7b00;
+    color: white;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.card button:hover {
+    background: #ff9500;
+}
+
+/* ================= Кнопка корзины ================= */
+.cart {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #ff7b00;
+    padding: 14px 25px;
+    border-radius: 30px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+}
+
+/* ================= Модальное окно ================= */
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(8px);
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+}
+
+.modal-content {
+    background: #1c2a35;
+    padding: 25px;
+    border-radius: 20px;
+    width: 90%;
+    max-width: 350px;
+    animation: pop 0.3s ease;
+}
+
+.qr {
+    width: 200px;
+    height: 200px;
+    margin: 0 auto 15px;
+    background: linear-gradient(45deg,#fff,#ddd);
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #000;
+    font-weight: 600;
+}
+
+.success {
+    text-align: center;
+    color: #4CAF50;
+    margin-top: 10px;
+}
+
+/* ================= Анимации ================= */
+@keyframes fadeIn {
+    from {opacity:0; transform: translateY(20px);}
+    to {opacity:1; transform: translateY(0);}
+}
+
+@keyframes pop {
+    from {transform: scale(0.8); opacity:0;}
+    to {transform: scale(1); opacity:1;}
 }
 </style>
 </head>
@@ -183,148 +212,149 @@ to{transform:scale(1);opacity:1}
 
 <h1>🍽 FoodBot Premium</h1>
 
-<!-- Выбор способа -->
+<!-- ================= Выбор способа ================= -->
 <div id="startChoice" class="glass">
-<div class="center">
-<h2>Выберите способ заказа</h2>
-<button class="choice-btn" onclick="chooseType('cafe')">🏪 В кафе</button>
-<button class="choice-btn" onclick="chooseType('delivery')">🚚 Доставка</button>
-</div>
+    <div class="center">
+        <h2>Выберите способ заказа</h2>
+        <button class="choice-btn" onclick="chooseType('cafe')">🏪 В кафе</button>
+        <button class="choice-btn" onclick="chooseType('delivery')">🚚 Доставка</button>
+    </div>
 </div>
 
-<!-- Адрес -->
+<!-- ================= Адрес доставки ================= -->
 <div id="addressBlock" class="glass hidden">
-<h3>Введите адрес доставки</h3>
-<input type="text" id="addressInput" placeholder="Город, улица, дом, квартира">
-<button class="choice-btn" onclick="saveAddress()">Продолжить</button>
+    <h3>Введите адрес доставки</h3>
+    <input type="text" id="addressInput" placeholder="Город, улица, дом, квартира">
+    <button class="choice-btn" onclick="saveAddress()">Продолжить</button>
 </div>
 
-<!-- Меню -->
+<!-- ================= Меню ================= -->
 <div id="menuBlock" class="hidden">
-
-<div class="categories">
-<div class="cat-btn" onclick="showCategory('burger')">🍔 Бургеры</div>
-<div class="cat-btn" onclick="showCategory('pizza')">🍕 Пицца</div>
-<div class="cat-btn" onclick="showCategory('shawarma')">🌯 Шаверма</div>
-<div class="cat-btn" onclick="showCategory('rolls')">🍣 Роллы</div>
-<div class="cat-btn" onclick="showCategory('chicken')">🍗 Курица</div>
+    <div class="categories">
+        <div class="cat-btn" onclick="showCategory('burger')">🍔 Бургеры</div>
+        <div class="cat-btn" onclick="showCategory('pizza')">🍕 Пицца</div>
+        <div class="cat-btn" onclick="showCategory('shawarma')">🌯 Шаверма</div>
+        <div class="cat-btn" onclick="showCategory('rolls')">🍣 Роллы</div>
+        <div class="cat-btn" onclick="showCategory('chicken')">🍗 Курица</div>
+    </div>
+    <div class="menu" id="menu"></div>
 </div>
 
-<div class="menu" id="menu"></div>
-
-</div>
-
+<!-- ================= Кнопка корзины ================= -->
 <div class="cart hidden" id="cartBtn" onclick="openPayment()">
 🛒 Оплатить (<span id="total">0</span> сом)
 </div>
 
-<!-- Оплата -->
+<!-- ================= Модальное окно оплаты ================= -->
 <div class="modal" id="paymentModal">
-<div class="modal-content">
-<h3 style="text-align:center;margin-bottom:15px;">Оплата через MBank</h3>
-<div class="qr">QR CODE</div>
-<button onclick="paid()">Я оплатил</button>
+    <div class="modal-content">
+        <h3 style="text-align:center;margin-bottom:15px;">Оплата через MBank</h3>
+        <div class="qr">QR CODE</div>
+        <button onclick="paid()">Я оплатил</button>
 
-<div id="afterPay" style="display:none">
-<p class="success">Заказ оформлен ✅</p>
-<input type="file" id="checkInput">
-<button style="margin-top:10px" onclick="sendToBot()">Отправить чек</button>
-</div>
-</div>
+        <div id="afterPay" class="hidden">
+            <p class="success">Заказ оформлен ✅</p>
+            <input type="file" id="checkInput">
+            <button style="margin-top:10px" onclick="sendToBot()">Отправить чек</button>
+        </div>
+    </div>
 </div>
 
 <script>
-let orderType=null;
-let address=null;
-let total=0;
+let orderType = null;
+let address = null;
+let total = 0;
 
-const menuData={
-burger:[{name:"Чизбургер",price:150,img:"https://images.unsplash.com/photo-1568901346375-23c9450c58cd"}],
-pizza:[{name:"Пепперони",price:500,img:"https://images.unsplash.com/photo-1601924638867-3ec2f1a8f3e2"}],
-shawarma:[{name:"Шаверма",price:230,img:"https://images.unsplash.com/photo-1604908176997-431b4d1c9d60"}],
-rolls:[{name:"Филадельфия",price:550,img:"https://images.unsplash.com/photo-1553621042-f6e147245754"}],
-chicken:[{name:"Крылышки",price:300,img:"https://images.unsplash.com/photo-1600891964599-f61ba0e24092"}]
+// ================= Меню =================
+const menuData = {
+    burger: [
+        {name:"Чизбургер",price:150,img:"https://images.unsplash.com/photo-1568901346375-23c9450c58cd"},
+        {name:"Мини-бургер",price:120,img:"https://images.unsplash.com/photo-1550547660-d9450f859349"}
+    ],
+    pizza: [
+        {name:"Пепперони",price:500,img:"https://images.unsplash.com/photo-1601924638867-3ec2f1a8f3e2"}
+    ],
+    shawarma: [
+        {name:"Шаверма с курицей",price:230,img:"https://images.unsplash.com/photo-1604908176997-431b4d1c9d60"}
+    ],
+    rolls: [
+        {name:"Филадельфия",price:550,img:"https://images.unsplash.com/photo-1553621042-f6e147245754"}
+    ],
+    chicken: [
+        {name:"Крылышки",price:300,img:"https://images.unsplash.com/photo-1600891964599-f61ba0e24092"}
+    ]
 };
 
+// ================= Функции =================
 function chooseType(type){
-orderType=type;
-document.getElementById("startChoice").classList.add("hidden");
-
-if(type==="delivery"){
-document.getElementById("addressBlock").classList.remove("hidden");
-}else{
-showMenu();
-}
+    orderType = type;
+    document.getElementById("startChoice").classList.add("hidden");
+    if(type === "delivery"){
+        document.getElementById("addressBlock").classList.remove("hidden");
+    } else {
+        showMenu();
+    }
 }
 
 function saveAddress(){
-address=document.getElementById("addressInput").value;
-if(!address) return alert("Введите адрес");
-document.getElementById("addressBlock").classList.add("hidden");
-showMenu();
+    address = document.getElementById("addressInput").value;
+    if(!address) return alert("Введите адрес");
+    document.getElementById("addressBlock").classList.add("hidden");
+    showMenu();
 }
 
 function showMenu(){
-document.getElementById("menuBlock").classList.remove("hidden");
-document.getElementById("cartBtn").classList.remove("hidden");
+    document.getElementById("menuBlock").classList.remove("hidden");
+    document.getElementById("cartBtn").classList.remove("hidden");
 }
 
 function showCategory(cat){
-const menu=document.getElementById("menu");
-menu.innerHTML="";
-menuData[cat].forEach(item=>{
-menu.innerHTML+=`
-<div class="card">
-<img src="${item.img}">
-<h3>${item.name}</h3>
-<div class="price">${item.price} сом</div>
-<button onclick="add(${item.price})">Добавить</button>
-</div>`;
-});
+    const menu = document.getElementById("menu");
+    menu.innerHTML = "";
+    menuData[cat].forEach(item => {
+        menu.innerHTML += `
+            <div class="card">
+                <img src="${item.img}">
+                <h3>${item.name}</h3>
+                <div class="price">${item.price} сом</div>
+                <button onclick="add(${item.price},'${item.name}')">Добавить</button>
+            </div>
+        `;
+    });
 }
 
-function add(price){
-total+=price;
-document.getElementById("total").innerText=total;
+function add(price,name){
+    total += price;
+    document.getElementById("total").innerText = total;
+    // Можно добавить список товаров для отправки
+    if(!window.items) window.items = [];
+    window.items.push(name);
 }
 
 function openPayment(){
-if(total===0)return alert("Добавьте блюда!");
-document.getElementById("paymentModal").style.display="flex";
+    if(total === 0) return alert("Добавьте блюда!");
+    document.getElementById("paymentModal").style.display = "flex";
 }
 
 function paid(){
-document.getElementById("afterPay").style.display="block";
+    document.getElementById("afterPay").classList.remove("hidden");
 }
 
-// ================= ВАРИАНТ 2: fetch с обработкой ошибок =================
+// ================= Отправка данных в бота через sendData =================
 function sendToBot(){
-const file=document.getElementById("checkInput").files[0];
-if(!file)return alert("Загрузите чек!");
+    const file = document.getElementById("checkInput").files[0];
+    if(!file) return alert("Загрузите чек!");
 
-const data={
-orderType:orderType,
-address:address,
-total:total,
-fileName:file.name
-};
+    const data = {
+        orderType: orderType,
+        address: address,
+        total: total,
+        fileName: file.name,
+        items: window.items || []
+    };
 
-fetch("https://your-server.com/payment",{
-method:"POST",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify(data)
-})
-.then(res=>{
-if(!res.ok) throw new Error("Сервер вернул ошибку");
-return res.json();
-})
-.then(res=>{
-alert("Данные успешно отправлены боту!");
-})
-.catch(error=>{
-console.log("Ошибка:", error);
-alert("Сервер недоступен или URL неправильный. Данные не отправлены, но интерфейс работает!");
-});
+    Telegram.WebApp.sendData(JSON.stringify(data));
+    alert("Данные отправлены боту!"); // для проверки
 }
 </script>
 
