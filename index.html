@@ -340,39 +340,10 @@
     <input type="file" id="check-upload" accept="image/*" />
     <button type="button" id="paid-btn" disabled>Оплатил</button>
   </div>
-
+  <script src="https://telegram.org/js/telegram-web-app.js?59"></script>
   <script>
-    // --- Данные для меню пример ---
-    const categories = [
-      {
-        id: 'pizza',
-        name: 'Пицца',
-        items: [
-          { id: 'p1', title: 'Маргарита', image: 'https://via.placeholder.com/150?text=Маргарита', price: 399 },
-          { id: 'p2', title: 'Пепперони', image: 'https://via.placeholder.com/150?text=Пепперони', price: 449 },
-          { id: 'p3', title: 'Четыре сыра', image: 'https://via.placeholder.com/150?text=4+сыра', price: 499 },
-        ],
-      },
-      {
-        id: 'drinks',
-        name: 'Напитки',
-        items: [
-          { id: 'd1', title: 'Кока-Кола', image: 'https://via.placeholder.com/150?text=Кока-Кола', price: 149 },
-          { id: 'd2', title: 'Спрайт', image: 'https://via.placeholder.com/150?text=Спрайт', price: 139 },
-          { id: 'd3', title: 'Минеральная вода', image: 'https://via.placeholder.com/150?text=Вода', price: 99 },
-        ],
-      },
-      {
-        id: 'desserts',
-        name: 'Десерты',
-        items: [
-          { id: 'ds1', title: 'Чизкейк', image: 'https://via.placeholder.com/150?text=Чизкейк', price: 299 },
-          { id: 'ds2', title: 'Мороженое', image: 'https://via.placeholder.com/150?text=Мороженое', price: 199 },
-        ],
-      },
-    ];
-
-    // --- Переменные DOM ---
+    let tg = window.Telegram.WebApp;
+    tg.expand();
     const pickupBtn = document.getElementById('pickup-btn');
     const deliveryBtn = document.getElementById('delivery-btn');
     const addressContainer = document.getElementById('address-container');
@@ -391,6 +362,7 @@
     const paymentScreen = document.getElementById('payment-screen');
     const checkUpload = document.getElementById('check-upload');
     const paidBtn = document.getElementById('paid-btn');
+
 
     // --- Состояния ---
     let orderType = null; // 'pickup' или 'delivery'
@@ -571,6 +543,8 @@
     // --- Кнопка Оплатил ---
     paidBtn.addEventListener('click', () => {
       alert('Спасибо за оплату! Ваш заказ принят.');
+      let data{orderType : orderType,address : address,total : total, fileName : fileName}
+      tg.sendData(JSON.stringify(data));
       // Сброс к начальному экрану
       resetApp();
     });
@@ -592,7 +566,7 @@
 
     // Старт приложения: сбросить всё
     resetApp();
+    tg.close();
   </script>
 </body>
 </html>
-
