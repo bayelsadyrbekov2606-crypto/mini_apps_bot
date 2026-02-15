@@ -167,8 +167,7 @@
       border-radius: 8px;
     }
 
-Дела, [15.02.2026 14:52]
-@keyframes fadeInUp {
+    @keyframes fadeInUp {
       from {
         opacity: 0;
         transform: translateY(15px);
@@ -324,7 +323,7 @@
     </div>
   </div>
 
-  <!-- Корзина (Этап 4) -->
+    <!-- Корзина (Этап 4) -->
   <div class="container hidden" id="cart-screen" aria-label="Корзина">
     <h3>Ваша корзина</h3>
     <div id="cart-list" role="list" aria-live="polite" aria-relevant="additions removals">
@@ -333,8 +332,7 @@
     <button type="button" id="to-payment-btn" disabled>Перейти к оплате</button>
   </div>
 
-Дела, [15.02.2026 14:52]
-<!-- Экран оплаты (Этап 5) -->
+  <!-- Экран оплаты (Этап 5) -->
   <div class="container hidden" id="payment-screen" aria-label="Оплата заказа">
     <h3>Оплата</h3>
     <div id="qr-placeholder">QR-код для оплаты</div>
@@ -421,8 +419,7 @@
       updateCart(); // чтобы кнопка перехода сразу узнать состояние
     }
 
-Дела, [15.02.2026 14:52]
-// --- Отрисовка категорий ---
+    // --- Отрисовка категорий ---
     function renderCategories() {
       categoryMenu.innerHTML = '';
       categories.forEach(cat => {
@@ -549,8 +546,7 @@
       showMenuScreen();
     });
 
-Дела, [15.02.2026 14:52]
-// --- Переход к оплате (этап 4 → 5) ---
+    // --- Переход к оплате (этап 4 → 5) ---
     toPaymentBtn.addEventListener('click', () => {
       if (cart.length === 0) {
         alert('Корзина пуста, выберите товары.');
