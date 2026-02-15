@@ -1,345 +1,601 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FoodBot WebApp</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-<style>
-/* ================= Общие стили ================= */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Inter', sans-serif;
-}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Мини-приложение заказа</title>
+  <style>
+    /* --- Общие стили для тёмного дизайна --- */
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #121212;
+      color: #eee;
+      margin: 0; padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      user-select: none;
+    }
+    h2 {
+      margin: 1rem 0 0.5rem;
+    }
+    button {
+      cursor: pointer;
+      border: none;
+      border-radius: 6px;
+      padding: 0.7rem 1.2rem;
+      background-color: #2a2a2a;
+      color: #eee;
+      font-weight: 600;
+      box-shadow: 0 0 8px #444a;
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+      user-select: none;
+    }
+    button:hover:not(:disabled) {
+      background-color: #575757;
+      box-shadow: 0 0 15px #82aaffaa;
+    }
+    button:disabled {
+      opacity: 0.5;
+      cursor: default;
+      box-shadow: none;
+    }
+    input[type=text] {
+      padding: 0.6rem;
+      font-size: 1rem;
+      border-radius: 6px;
+      border: none;
+      background: #2a2a2a;
+      color: #eee;
+      width: 100%;
+      box-sizing: border-box;
+      margin-bottom: 1rem;
+      box-shadow: inset 0 0 6px #0008;
+      transition: box-shadow 0.3s ease;
+    }
+    input[type=text]:focus {
+      outline: none;
+      box-shadow: inset 0 0 8px #82aaff;
+    }
 
-body {
-    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-    color: white;
-    padding: 15px;
-}
+    .hidden {
+      display: none !important;
+    }
 
-h1 {
-    text-align: center;
-    font-weight: 800;
-    margin-bottom: 20px;
-}
+    .container {
+      max-width: 480px;
+      width: 100%;
+      padding: 1rem 1.2rem;
+      box-sizing: border-box;
+      background: #171717;
+      border-radius: 14px;
+      margin-top: 2rem;
+      box-shadow: 0 0 20px #333a;
+    }
 
-.hidden {
-    display: none;
-}
+    .center {
+      text-align: center;
+    }
 
-/* ================= Glass карточки ================= */
-.glass {
-    background: rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(20px);
-    border-radius: 20px;
-    padding: 20px;
-    margin-bottom: 20px;
-}
+    /* Этап 1 - выбор самовывоза/доставки */
+    #start-screen button {
+      width: calc(50% - 0.6rem);
+      margin: 0.3rem;
+      font-size: 1.1rem;
+      font-weight: 700;
+      background: #303030;
+      transition: background-color 0.4s;
+    }
+    #start-screen button.selected {
+      background: #4a7eff;
+      box-shadow: 0 0 12px #4a7effaa;
+    }
 
-.center {
-    text-align: center;
-}
+    /* Этап 2 - ввод адреса */
+    #address-container {
+      margin-top: 1rem;
+    }
 
-.choice-btn {
-    padding: 14px;
-    border: none;
-    border-radius: 15px;
-    background: #ff7b00;
-    color: white;
-    font-weight: 600;
-    cursor: pointer;
-    margin-top: 10px;
-    width: 100%;
-    transition: 0.3s;
-}
+    /* Меню категорий */
+    #category-menu {
+      display: flex;
+      gap: 0.8rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    #category-menu button {
+      border-radius: 20px;
+      padding: 0.5rem 1.2rem;
+      font-weight: 600;
+      background-color: #2a2a2a;
+      transition: background-color 0.3s, color 0.3s;
+    }
+    #category-menu button.active {
+      background-color: #4a7eff;
+      color: #fff;
+      box-shadow: 0 0 15px #4a7effaa;
+    }
 
-.choice-btn:hover {
-    background: #ff9500;
-    transform: scale(1.03);
-}
+    /* Сетка подкатегорий */
+    #subcategory-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 1rem;
+    }
 
-input {
-    width: 100%;
-    padding: 12px;
-    border-radius: 12px;
-    border: none;
-    margin-top: 10px;
-    font-size: 14px;
-}
+    /* Карточки товаров */
+    .menu-item-card {
+      background: #222;
+      border-radius: 12px;
+      box-shadow: 0 0 15px #000c inset;
+      padding: 0.6rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      color: #eee;
+      font-weight: 600;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      opacity: 0;
+      animation: fadeInUp 0.5s forwards;
+      user-select: none;
+    }
+    .menu-item-card:hover {
+      transform: scale(1.07);
+      box-shadow: 0 0 18px #4a7effcc inset;
+    }
+    .menu-item-card img {
+      width: 100%;
+      height: 90px;
+      object-fit: cover;
+      border-radius: 10px;
+      margin-bottom: 0.5rem;
+      pointer-events: none;
+      user-select: none;
+    }
+    .menu-item-card button {
+      margin-top: auto;
+      padding: 0.4rem 0.7rem;
+      background-color: #4a7eff;
+      box-shadow: 0 0 8px #4a7effaa;
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: white;
+      border-radius: 8px;
+    }
 
-/* ================= Категории ================= */
-.categories {
-    display: flex;
-    gap: 10px;
-    overflow-x: auto;
-    margin-bottom: 20px;
-}
+Дела, [15.02.2026 14:52]
+@keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(15px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
 
-.cat-btn {
-    padding: 10px 16px;
-    border-radius: 25px;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    cursor: pointer;
-    white-space: nowrap;
-    transition: 0.3s;
-}
+    /* Корзина */
+    #cart-screen {
+      margin-top: 2rem;
+      background-color: #1d1d1d;
+      border-radius: 14px;
+      padding: 1rem;
+      box-shadow: 0 0 15px #000c inset;
+    }
+    #cart-screen h3 {
+      margin: 0 0 0.7rem 0;
+    }
 
-.cat-btn:hover {
-    background: #ff7b00;
-}
+    #cart-list {
+      max-height: 180px;
+      overflow-y: auto;
+      background: #222;
+      border-radius: 12px;
+      padding: 0.5rem;
+      box-shadow: inset 0 0 10px #000a;
+    }
 
-/* ================= Меню ================= */
-.menu {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 15px;
-}
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.4rem 0.8rem;
+      border-bottom: 1px solid #3a3a3a;
+      font-weight: 600;
+    }
+    .cart-item:last-child {
+      border-bottom: none;
+    }
+    .cart-item button {
+      background: transparent;
+      color: #e55151;
+      font-size: 1.1rem;
+      padding: 0 6px;
+      font-weight: 900;
+      cursor: pointer;
+      transition: color 0.3s;
+    }
+    .cart-item button:hover {
+      color: #ff7777;
+    }
 
-.card {
-    background: rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(15px);
-    border-radius: 20px;
-    padding: 12px;
-    transition: 0.4s;
-}
+    #to-payment-btn {
+      width: 100%;
+      margin-top: 1rem;
+      background-color: #4a7eff;
+      font-size: 1.1rem;
+      padding: 0.8rem 0;
+      font-weight: 700;
+    }
 
-.card:hover {
-    transform: translateY(-5px) scale(1.03);
-}
+    /* Экран оплаты */
+    #payment-screen {
+      margin-top: 2rem;
+      background-color: #1b1b2f;
+      padding: 1rem 1.2rem;
+      border-radius: 14px;
+      box-shadow: 0 0 15px #000a inset;
+      color: #ccddff;
+      max-width: 480px;
+      width: 100%;
+    }
+    #payment-screen h3 {
+      margin-top: 0;
+      margin-bottom: 1rem;
+      text-align: center;
+      color: #aad4ff;
+    }
+    #qr-placeholder {
+      background-color: #2a2a2a;
+      height: 160px;
+      border-radius: 12px;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 1.15rem;
+      color: #7788aa;
+      user-select: none;
+      box-shadow: inset 0 0 10px #0008;
+    }
+    #check-upload {
+      width: 100%;
+      margin-bottom: 1rem;
+    }
+    #paid-btn {
+      width: 100%;
+      background-color: #4a7eff;
+      color: #ddd;
+      font-weight: 700;
+      font-size: 1.2rem;
+      padding: 0.8rem 0;
+      border-radius: 10px;
+      box-shadow: 0 0 15px #4a7effaa;
+      user-select: none;
+    }
+    #paid-btn:disabled {
+      background-color: #384a84;
+      box-shadow: none;
+      cursor: default;
+      opacity: 0.6;
+    }
 
-.card img {
-    width: 100%;
-    height: 120px;
-    object-fit: cover;
-    border-radius: 15px;
-    margin-bottom: 10px;
-}
-
-.price {
-    font-weight: 600;
-    margin-bottom: 8px;
-}
-
-.card button {
-    width: 100%;
-    padding: 8px;
-    border: none;
-    border-radius: 10px;
-    background: #ff7b00;
-    color: white;
-    cursor: pointer;
-}
-
-.card button:hover {
-    background: #ff9500;
-}
-
-/* ================= Кнопка корзины ================= */
-.cart {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: #ff7b00;
-    padding: 14px 25px;
-    border-radius: 30px;
-    font-weight: 600;
-    cursor: pointer;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
-}
-
-/* ================= Модальное окно оплаты ================= */
-.modal {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.6);
-    backdrop-filter: blur(8px);
-    justify-content: center;
-    align-items: center;
-    z-index: 100;
-}
-
-.modal-content {
-    background: #1c2a35;
-    padding: 25px;
-    border-radius: 20px;
-    width: 90%;
-    max-width: 350px;
-}
-
-.qr {
-    width: 200px;
-    height: 200px;
-    margin: 0 auto 15px;
-    background: linear-gradient(45deg,#fff,#ddd);
-    border-radius: 15px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #000;
-    font-weight: 600;
-}
-
-.success {
-    text-align: center;
-    color: #4CAF50;
-    margin-top: 10px;
-}
-</style>
+    /* Скрываем scrollbar на Chrome */
+    #cart-list::-webkit-scrollbar {
+      width: 6px;
+    }
+    #cart-list::-webkit-scrollbar-thumb {
+      background-color: #4a7eff88;
+      border-radius: 20px;
+    }
+  </style>
 </head>
 <body>
 
-<h1>🍽 FoodBot Premium</h1>
-
-<!-- ================= Выбор способа ================= -->
-<div id="startChoice" class="glass">
-    <div class="center">
-        <h2>Выберите способ заказа</h2>
-        <button class="choice-btn" onclick="chooseType('cafe')">🏪 В кафе</button>
-        <button class="choice-btn" onclick="chooseType('delivery')">🚚 Доставка</button>
+  <!-- Этап 1: Выбор типа заказа -->
+  <div class="container center" id="start-screen">
+    <h2>Выберите тип заказа</h2>
+    <div>
+      <button id="pickup-btn" type="button">Самовывоз</button>
+      <button id="delivery-btn" type="button">Доставка</button>
     </div>
-</div>
-
-<!-- ================= Адрес доставки ================= -->
-<div id="addressBlock" class="glass hidden">
-    <h3>Введите адрес доставки</h3>
-    <input type="text" id="addressInput" placeholder="Город, улица, дом, квартира">
-    <button class="choice-btn" onclick="saveAddress()">Продолжить</button>
-</div>
-
-<!-- ================= Меню ================= -->
-<div id="menuBlock" class="hidden">
-    <div class="categories">
-        <div class="cat-btn" onclick="showCategory('burger')">🍔 Бургеры</div>
-        <div class="cat-btn" onclick="showCategory('pizza')">🍕 Пицца</div>
-        <div class="cat-btn" onclick="showCategory('shawarma')">🌯 Шаверма</div>
-        <div class="cat-btn" onclick="showCategory('rolls')">🍣 Роллы</div>
-        <div class="cat-btn" onclick="showCategory('chicken')">🍗 Курица</div>
+    <!-- Этап 2: Адрес -->
+    <div id="address-container" class="hidden">
+      <h3>Введите адрес доставки</h3>
+      <input type="text" id="address-input" placeholder="Ваш адрес" autocomplete="off" />
+      <button type="button" id="address-next-btn" disabled>Далее</button>
     </div>
-    <div class="menu" id="menu"></div>
-</div>
+  </div>
 
-<!-- ================= Кнопка корзины ================= -->
-<div class="cart hidden" id="cartBtn" onclick="openPayment()">
-🛒 Оплатить (<span id="total">0</span> сом)
-</div>
-
-<!-- ================= Модальное окно оплаты ================= -->
-<div class="modal" id="paymentModal">
-    <div class="modal-content">
-        <h3 style="text-align:center;margin-bottom:15px;">Оплата через MBank</h3>
-        <div class="qr">QR CODE</div>
-        <button onclick="paid()">Я оплатил</button>
-
-        <div id="afterPay" class="hidden">
-            <p class="success">Заказ оформлен ✅</p>
-            <input type="file" id="checkInput">
-            <button style="margin-top:10px" onclick="sendToBot()">Отправить чек</button>
-        </div>
+  <!-- Меню (Этап 3) -->
+  <div class="container hidden" id="menu-screen" aria-label="Меню">
+    <h2>Категории</h2>
+    <div id="category-menu" role="tablist" aria-label="Выбор категории">
+      <!-- Кнопки категорий создает скрипт -->
     </div>
-</div>
+    <div id="subcategory-list" aria-live="polite" aria-relevant="additions">
+      <!-- Карточки товаров -->
+    </div>
+  </div>
 
-<script>
-let orderType = null;
-let address = null;
-let total = 0;
+  <!-- Корзина (Этап 4) -->
+  <div class="container hidden" id="cart-screen" aria-label="Корзина">
+    <h3>Ваша корзина</h3>
+    <div id="cart-list" role="list" aria-live="polite" aria-relevant="additions removals">
+      <!-- Тут будут добавлены элементы корзины -->
+    </div>
+    <button type="button" id="to-payment-btn" disabled>Перейти к оплате</button>
+  </div>
 
-// ================= Меню =================
-const menuData = {
-    burger: [
-        {name:"Чизбургер",price:150,img:"https://images.unsplash.com/photo-1568901346375-23c9450c58cd"},
-        {name:"Мини-бургер",price:120,img:"https://images.unsplash.com/photo-1550547660-d9450f859349"}
-    ],
-    pizza: [
-        {name:"Пепперони",price:500,img:"https://images.unsplash.com/photo-1601924638867-3ec2f1a8f3e2"}
-    ],
-    shawarma: [
-        {name:"Шаверма с курицей",price:230,img:"https://images.unsplash.com/photo-1604908176997-431b4d1c9d60"}
-    ],
-    rolls: [
-        {name:"Филадельфия",price:550,img:"https://images.unsplash.com/photo-1553621042-f6e147245754"}
-    ],
-    chicken: [
-        {name:"Крылышки",price:300,img:"https://images.unsplash.com/photo-1600891964599-f61ba0e24092"}
-    ]
-};
+Дела, [15.02.2026 14:52]
+<!-- Экран оплаты (Этап 5) -->
+  <div class="container hidden" id="payment-screen" aria-label="Оплата заказа">
+    <h3>Оплата</h3>
+    <div id="qr-placeholder">QR-код для оплаты</div>
+    <label for="check-upload">Загрузите фото чека:</label>
+    <input type="file" id="check-upload" accept="image/*" />
+    <button type="button" id="paid-btn" disabled>Оплатил</button>
+  </div>
 
-// ================= Функции =================
-function chooseType(type){
-    orderType = type;
-    document.getElementById("startChoice").classList.add("hidden");
-    if(type === "delivery"){
-        document.getElementById("addressBlock").classList.remove("hidden");
-    } else {
-        showMenu();
+  <script>
+    // --- Данные для меню пример ---
+    const categories = [
+      {
+        id: 'pizza',
+        name: 'Пицца',
+        items: [
+          { id: 'p1', title: 'Маргарита', image: 'https://via.placeholder.com/150?text=Маргарита', price: 399 },
+          { id: 'p2', title: 'Пепперони', image: 'https://via.placeholder.com/150?text=Пепперони', price: 449 },
+          { id: 'p3', title: 'Четыре сыра', image: 'https://via.placeholder.com/150?text=4+сыра', price: 499 },
+        ],
+      },
+      {
+        id: 'drinks',
+        name: 'Напитки',
+        items: [
+          { id: 'd1', title: 'Кока-Кола', image: 'https://via.placeholder.com/150?text=Кока-Кола', price: 149 },
+          { id: 'd2', title: 'Спрайт', image: 'https://via.placeholder.com/150?text=Спрайт', price: 139 },
+          { id: 'd3', title: 'Минеральная вода', image: 'https://via.placeholder.com/150?text=Вода', price: 99 },
+        ],
+      },
+      {
+        id: 'desserts',
+        name: 'Десерты',
+        items: [
+          { id: 'ds1', title: 'Чизкейк', image: 'https://via.placeholder.com/150?text=Чизкейк', price: 299 },
+          { id: 'ds2', title: 'Мороженое', image: 'https://via.placeholder.com/150?text=Мороженое', price: 199 },
+        ],
+      },
+    ];
+
+    // --- Переменные DOM ---
+    const pickupBtn = document.getElementById('pickup-btn');
+    const deliveryBtn = document.getElementById('delivery-btn');
+    const addressContainer = document.getElementById('address-container');
+    const addressInput = document.getElementById('address-input');
+    const addressNextBtn = document.getElementById('address-next-btn');
+
+    const startScreen = document.getElementById('start-screen');
+    const menuScreen = document.getElementById('menu-screen');
+    const categoryMenu = document.getElementById('category-menu');
+    const subcategoryList = document.getElementById('subcategory-list');
+
+    const cartScreen = document.getElementById('cart-screen');
+    const cartList = document.getElementById('cart-list');
+    const toPaymentBtn = document.getElementById('to-payment-btn');
+
+    const paymentScreen = document.getElementById('payment-screen');
+    const checkUpload = document.getElementById('check-upload');
+    const paidBtn = document.getElementById('paid-btn');
+
+    // --- Состояния ---
+    let orderType = null; // 'pickup' или 'delivery'
+    let deliveryAddress = '';
+    let selectedCategory = null;
+    let cart = [];
+
+    // --- Функции отображения ---
+    function resetSelection() {
+      pickupBtn.classList.remove('selected');
+      deliveryBtn.classList.remove('selected');
+      addressContainer.classList.add('hidden');
+      addressInput.value = '';
+      addressNextBtn.disabled = true;
     }
-}
 
-function saveAddress(){
-    address = document.getElementById("addressInput").value;
-    if(!address) return alert("Введите адрес");
-    document.getElementById("addressBlock").classList.add("hidden");
-    showMenu();
-}
+    function showMenuScreen() {
+      startScreen.classList.add('hidden');
+      menuScreen.classList.remove('hidden');
+      cartScreen.classList.remove('hidden');
+      paymentScreen.classList.add('hidden');
+      renderCategories();
+      // по умолчанию выбрать первый раздел
+      selectedCategory = categories[0].id;
+      renderSubcategories(selectedCategory);
+      updateCart(); // чтобы кнопка перехода сразу узнать состояние
+    }
 
-function showMenu(){
-    document.getElementById("menuBlock").classList.remove("hidden");
-    document.getElementById("cartBtn").classList.remove("hidden");
-}
+Дела, [15.02.2026 14:52]
+// --- Отрисовка категорий ---
+    function renderCategories() {
+      categoryMenu.innerHTML = '';
+      categories.forEach(cat => {
+        const btn = document.createElement('button');
+        btn.textContent = cat.name;
+        btn.setAttribute('role', 'tab');
+        btn.setAttribute('aria-selected', cat.id === selectedCategory ? 'true' : 'false');
+        btn.classList.toggle('active', cat.id === selectedCategory);
+        btn.dataset.catId = cat.id;
+        btn.addEventListener('click', () => {
+          if (selectedCategory === cat.id) return;
+          selectedCategory = cat.id;
+          renderCategories();
+          renderSubcategories(selectedCategory);
+        });
+        categoryMenu.appendChild(btn);
+      });
+    }
 
-function showCategory(cat){
-    const menu = document.getElementById("menu");
-    menu.innerHTML = "";
-    menuData[cat].forEach(item => {
-        menu.innerHTML += `
-            <div class="card">
-                <img src="${item.img}">
-                <h3>${item.name}</h3>
-                <div class="price">${item.price} сом</div>
-                <button onclick="add(${item.price},'${item.name}')">Добавить</button>
-            </div>
+    // --- Отрисовка подкатегорий (товаров) ---
+    function renderSubcategories(catId) {
+      subcategoryList.innerHTML = '';
+      const cat = categories.find(c => c.id === catId);
+      if (!cat) return;
+      cat.items.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'menu-item-card';
+        card.innerHTML = `
+          <img src="${item.image}" alt="${item.title}" loading="lazy" />
+          <div>${item.title}</div>
+          <div>${item.price} ₽</div>
+          <button type="button">Добавить</button>
         `;
+
+        const btn = card.querySelector('button');
+        btn.addEventListener('click', () => {
+          addToCart(item);
+        });
+        // Анимация появления
+        card.style.animationDelay = (Math.random() * 0.2) + 's';
+        subcategoryList.appendChild(card);
+      });
+    }
+
+    // --- Добавление в корзину ---
+    function addToCart(item) {
+      const existing = cart.find(i => i.id === item.id);
+      if (existing) {
+        existing.quantity++;
+      } else {
+        cart.push({ ...item, quantity: 1 });
+      }
+      updateCart();
+    }
+
+    // --- Обновление корзины на экране ---
+    function updateCart() {
+      cartList.innerHTML = '';
+      if (cart.length === 0) {
+        cartList.innerHTML = '<p>Корзина пуста</p>';
+        toPaymentBtn.disabled = true;
+        return;
+      }
+      cart.forEach((item, index) => {
+        const div = document.createElement('div');
+        div.className = 'cart-item';
+        div.setAttribute('role', 'listitem');
+        div.innerHTML = `
+          <span>${item.title} × ${item.quantity} — ${item.price * item.quantity} ₽</span>
+          <button type="button" aria-label="Удалить ${item.title}" data-index="${index}">&times;</button>
+        `;
+        const btnRemove = div.querySelector('button');
+        btnRemove.addEventListener('click', () => {
+          removeFromCart(index);
+        });
+        cartList.appendChild(div);
+      });
+      toPaymentBtn.disabled = false;
+    }
+
+    // --- Удаление из корзины ---
+    function removeFromCart(index) {
+      if (cart[index].quantity > 1) {
+        cart[index].quantity--;
+      } else {
+        cart.splice(index, 1);
+      }
+      updateCart();
+    }
+
+    // --- Обработчики этапа 1 ---
+    pickupBtn.addEventListener('click', () => {
+      orderType = 'pickup';
+      resetSelection();
+      pickupBtn.classList.add('selected');
+      addressContainer.classList.add('hidden');
+      // Без адреса — сразу дальше
+      addressNextBtn.disabled = false;
+      setTimeout(() => {
+        showMenuScreen();
+      }, 300);
     });
-}
 
-function add(price,name){
-    total += price;
-    document.getElementById("total").innerText = total;
-    if(!window.items) window.items = [];
-    window.items.push(name);
-}
+    deliveryBtn.addEventListener('click', () => {
+      orderType = 'delivery';
+      resetSelection();
+      deliveryBtn.classList.add('selected');
+      addressContainer.classList.remove('hidden');
+      addressNextBtn.disabled = true;
+      addressInput.focus();
+    });
 
-function openPayment(){
-    if(total === 0) return alert("Добавьте блюда!");
-    document.getElementById("paymentModal").style.display = "flex";
-}
+    // --- Этап 2: проверка адреса ---
+    addressInput.addEventListener('input', () => {
+      addressNextBtn.disabled = addressInput.value.trim().length < 5;
+    });
 
-function paid(){
-    document.getElementById("afterPay").classList.remove("hidden");
-}
+    addressNextBtn.addEventListener('click', () => {
+      deliveryAddress = addressInput.value.trim();
+      if (deliveryAddress.length < 5) {
+        alert('Пожалуйста, введите корректный адрес.');
+        return;
+      }
+      showMenuScreen();
+    });
 
-// ================= Отправка данных в бота =================
-function sendToBot(){
-    const file = document.getElementById("checkInput").files[0];
-    if(!file) return alert("Загрузите чек!");
+Дела, [15.02.2026 14:52]
+// --- Переход к оплате (этап 4 → 5) ---
+    toPaymentBtn.addEventListener('click', () => {
+      if (cart.length === 0) {
+        alert('Корзина пуста, выберите товары.');
+        return;
+      }
+      // скрыть меню и корзину
+      startScreen.classList.add('hidden');
+      menuScreen.classList.add('hidden');
+      cartScreen.classList.add('hidden');
 
-    const data = {
-        orderType: orderType,
-        address: address,
-        total: total,
-        fileName: file.name,
-        items: window.items || []
-    };
+      // показать оплату
+      paymentScreen.classList.remove('hidden');
+      paidBtn.disabled = true;
+      checkUpload.value = '';
+    });
 
-    Telegram.WebApp.sendData(JSON.stringify(data));
-    alert("Данные отправлены боту!"); // для проверки
-}
-</script>
+    // --- Контроль загрузки фото чека ---
+    checkUpload.addEventListener('change', () => {
+      paidBtn.disabled = checkUpload.files.length === 0;
+    });
 
+    // --- Кнопка Оплатил ---
+    paidBtn.addEventListener('click', () => {
+      alert('Спасибо за оплату! Ваш заказ принят.');
+      // Сброс к начальному экрану
+      resetApp();
+    });
+
+    // --- Сброс всего ---
+    function resetApp() {
+      orderType = null;
+      deliveryAddress = '';
+      selectedCategory = null;
+      cart = [];
+      resetSelection();
+      startScreen.classList.remove('hidden');
+      menuScreen.classList.add('hidden');
+      cartScreen.classList.add('hidden');
+      paymentScreen.classList.add('hidden');
+      addressContainer.classList.add('hidden');
+      updateCart();
+    }
+
+    // Старт приложения: сбросить всё
+    resetApp();
+  </script>
 </body>
 </html>
